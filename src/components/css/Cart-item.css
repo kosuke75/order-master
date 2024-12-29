@@ -1,0 +1,54 @@
+/* CartItem.css */
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #cfcfce; 
+    color: black; /* 文字の色 */
+    padding: 8px;
+    border-bottom: 2px solid #374151; 
+    gap: 16px;
+    border-radius: 8px;
+  }
+  
+  .cart-item img {
+    width: 48px; 
+  }
+  
+  .cart-item h3 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .cart-item p {
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .cart-item .quantity-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    width: 80px; /* w-20 */
+  }
+  
+  .cart-item .quantity-controls button {
+    background-color: #e5e7eb; /* bg-gray-200 */
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    color: #06b6d4; /* text-cyan-600 */
+  }
+  
+  .cart-item .quantity-controls span {
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .cart-item .quantity-controls button:hover {
+    background-color: #d1d5db; 
+  }
+  
