@@ -3,10 +3,9 @@ const cors = require('cors');
 const stripe = require('stripe')('sk_test_51QShcjLpw1vqZrCR8TkQOP3d8fFukAHgr0DrJPXitxsULZtBbSj2JomfXaIUFDUrsMEoHjz83bMPjVam0V1SPonO00Mk91ErR9');
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: 'https://main.d1i2hzm1xh2h9b.amplifyapp.com' }));
 app.use(express.json());
 
-// 商品データ（実際にはデータベースなどで管理することをお勧めします）
 const productsArray = [
     {
         id: "price_1QaVo8Lpw1vqZrCRTtPS0T25",
@@ -62,8 +61,8 @@ app.post("/checkout", async (req, res) => {
         const session = await stripe.checkout.sessions.create({
             line_items: lineItems,
             mode: 'payment',
-            success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: "http://localhost:3000/cancel",
+            success_url: `https://main.d1i2hzm1xh2h9b.amplifyapp.com/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: "https://main.d1i2hzm1xh2h9b.amplifyapp.com/cancel",
             metadata: { email, items: JSON.stringify(items) },
         });
 
