@@ -13,7 +13,7 @@ function NavbarComponent() {
     const handleShow = () => setShow(true);
 
     const checkout = async () => {
-        const response = await fetch('https://main.d1i2hzm1xh2h9b.amplifyapp.com/checkout', {
+        const response = await fetch('http://3.107.22.67:4000/checkout', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
