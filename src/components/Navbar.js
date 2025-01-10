@@ -13,7 +13,7 @@ function NavbarComponent() {
     const handleShow = () => setShow(true);
 
     const checkout = async () => {
-        const response = await fetch('https://order-servertest.zapto.org', {
+        const response = await fetch('http://3.107.22.67/', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
