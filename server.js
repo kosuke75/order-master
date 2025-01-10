@@ -1,3 +1,5 @@
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')('sk_test_51QShcjLpw1vqZrCR8TkQOP3d8fFukAHgr0DrJPXitxsULZtBbSj2JomfXaIUFDUrsMEoHjz83bMPjVam0V1SPonO00Mk91ErR9');
@@ -101,4 +103,11 @@ app.get('/getOrderDetails', (req, res) => {
     }
 });
 
-app.listen(process.env.PORT || 4000, () => console.log("Listening on port 4000!"));
+// HTTPS サーバー設定
+const options = {
+    key: fs.readFileSync('/path/to/your/private.key'),
+    cert: fs.readFileSync('/path/to/your/certificate.crt'),
+    ca: fs.readFileSync('/path/to/your/ca_bundle.crt')
+};
+
+https.createServer(options, app).listen(443, () => console.log('HTTPS server is running on port 443'));
