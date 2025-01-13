@@ -13,7 +13,7 @@ function NavbarComponent() {
     const handleShow = () => setShow(true);
 
     const checkout = async () => {
-        const response = await fetch('http://3.104.64.133/checkout', { // バックエンドURLを更新
+        const response = await fetch('https://3.104.64.133/checkout', { // バックエンドURLを更新
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
