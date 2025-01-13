@@ -13,17 +13,19 @@ function NavbarComponent() {
     const handleShow = () => setShow(true);
 
     const checkout = async () => {
-        const response = await fetch('http://3.107.22.67/', {
+        const response = await fetch('http://3.104.64.133/checkout', { // バックエンドURLを更新
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ items: cart.items })
+            body: JSON.stringify({ items: cart.items, email: cart.email }) // emailも送信する
         });
         
         const data = await response.json();
         if (data.url) {
             window.location.assign(data.url); // Stripeのチェックアウトセッションにリダイレクト
+        } else {
+            console.error('Checkout failed:', data);
         }
     };
 
@@ -33,8 +35,8 @@ function NavbarComponent() {
         <>
             <Navbar expand="sm">
                 <Button variant="secondary" onClick={() => navigate('/')}>
-                        ホームへ戻る
-                    </Button>
+                    ホームへ戻る
+                </Button>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Button onClick={handleShow}>カート ({productsCount})</Button>
@@ -59,7 +61,6 @@ function NavbarComponent() {
                     ) : (
                         <h1>カートに商品がありません</h1>
                     )}
-                    {/* ホームへ戻るボタン */}
                 </Modal.Body>
             </Modal>
         </>
