@@ -1,13 +1,12 @@
-const https = require('https');
-const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')('sk_test_51QShcjLpw1vqZrCR8TkQOP3d8fFukAHgr0DrJPXitxsULZtBbSj2JomfXaIUFDUrsMEoHjz83bMPjVam0V1SPonO00Mk91ErR9');
 
 const app = express();
-app.use(cors({ origin: 'https://main.d1i2hzm1xh2h9b.amplifyapp.com' }));
+app.use(cors());
 app.use(express.json());
 
+// 商品データ（実際にはデータベースなどで管理することをお勧めします）
 const productsArray = [
     {
         id: "price_1QaVo8Lpw1vqZrCRTtPS0T25",
@@ -63,8 +62,8 @@ app.post("/checkout", async (req, res) => {
         const session = await stripe.checkout.sessions.create({
             line_items: lineItems,
             mode: 'payment',
-            success_url: `https://main.d1i2hzm1xh2h9b.amplifyapp.com/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: "https://main.d1i2hzm1xh2h9b.amplifyapp.com/cancel",
+            success_url: `https://main.d1i2hzm1xh2h9b.amplifyapp.com/success?session_id={CHECKOUT_SESSION_ID}`, // フロントエンドURLに修正
+            cancel_url: "https://main.d1i2hzm1xh2h9b.amplifyapp.com/cancel", // フロントエンドURLに修正
             metadata: { email, items: JSON.stringify(items) },
         });
 
@@ -81,7 +80,7 @@ app.post("/checkout", async (req, res) => {
             totalAmount: totalAmount,
             purchaseDate: new Date().toISOString(),
         };
-        
+
         console.log("Order saved in sessions:", orderSessions[session.id]);
 
         res.send(JSON.stringify({ url: session.url }));
@@ -103,11 +102,4 @@ app.get('/getOrderDetails', (req, res) => {
     }
 });
 
-// HTTPS サーバー設定
-const options = {
-    key: fs.readFileSync('/path/to/your/private.key'),
-    cert: fs.readFileSync('/path/to/your/certificate.crt'),
-    ca: fs.readFileSync('/path/to/your/ca_bundle.crt')
-};
-
-https.createServer(options, app).listen(443, () => console.log('HTTPS server is running on port 443'));
+app.listen(process.env.PORT || 4000, () => console.log("Listening on port 4000!"));
