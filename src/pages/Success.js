@@ -8,21 +8,21 @@ import './Success.css';
 const Success = () => {
   const [user, loading, error] = useAuthState(auth);
   const [orderDetails, setOrderDetails] = useState(null);
-  const [fetchError, setFetchError] = useState(null);
+  const [fetchError, setFetchError] = useState(null); // エラーを管理する状態
   const location = useLocation();
   const sessionId = new URLSearchParams(location.search).get('session_id'); // URLからsession_idを取得
 
   useEffect(() => {
     if (sessionId) {
-      fetch(`https://main.d1i2hzm1xh2h9b.amplifyapp.com/getOrderDetails?sessionId=${sessionId}`)
+      fetch(`https://gakusyoku-28b1c.de.r.appspot.com/getOrderDetails?sessionId=${sessionId}`)
         .then(response => {
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
           return response.json();
         })
         .then(data => {
-          console.log("Order details fetched:", data);
+          console.log("Order details fetched:", data);  // サーバーからのデータを確認
           setOrderDetails(data);
         })
         .catch(err => {
@@ -45,10 +45,7 @@ const Success = () => {
   }
 
   if (fetchError) {
-    return <div>
-      <p>{fetchError}</p>
-      <button onClick={() => window.location.reload()}>Retry</button>
-    </div>;
+    return <p>{fetchError}</p>;
   }
 
   if (!orderDetails) {
@@ -59,8 +56,8 @@ const Success = () => {
   const purchaseData = {
     email: user.email,
     purchaseDate: new Date().toLocaleString(),
-    orderId: orderDetails.sessionId,
-    sessionId: orderDetails.sessionId,
+    orderId: orderDetails.sessionId, // 注文IDを注文詳細から取得
+    sessionId: orderDetails.sessionId, // sessionIdを追加
     items: orderDetails.items,
     totalAmount: orderDetails.totalAmount,
   };
@@ -78,7 +75,7 @@ const Success = () => {
       <ul>
         {orderDetails.items.map((item, index) => (
           <li key={index}>
-            <p><strong>{item.title}</strong></p>
+            <p><strong>{item.title}</strong></p> {/* 商品名: title に変更 */}
             <p>数量: {item.quantity}</p>
             <p>金額: ¥{item.price}</p>
           </li>
@@ -88,7 +85,6 @@ const Success = () => {
       <h3>合計金額: ¥{orderDetails.totalAmount}</h3>
 
       <QRCodeCanvas value={qrData} size={256} />
-
     </div>
   );
 }
