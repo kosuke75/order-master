@@ -13,7 +13,7 @@ const Success = () => {
 
   useEffect(() => {
     if (sessionId) {
-      fetch(`http://localhost:4000/getOrderDetails?sessionId=${sessionId}`)
+      fetch(`https://main.d1i2hzm1xh2h9b.amplifyapp.com/getOrderDetails?sessionId=${sessionId}`)
         .then(response => response.json())
         .then(data => {
           console.log("Order details fetched:", data);  // サーバーからのデータを確認
