@@ -62,8 +62,8 @@ app.post("/checkout", async (req, res) => {
         const session = await stripe.checkout.sessions.create({
             line_items: lineItems,
             mode: 'payment',
-            success_url: `https://main.d1i2hzm1xh2h9b.amplifyapp.com/success?session_id={CHECKOUT_SESSION_ID}`, // フロントエンドURLに修正
-            cancel_url: "https://main.d1i2hzm1xh2h9b.amplifyapp.com/cancel", // フロントエンドURLに修正
+            success_url: `https://main.d1i2hzm1xh2h9b.amplifyapp.com/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: "https://main.d1i2hzm1xh2h9b.amplifyapp.com/cancel",
             metadata: { email, items: JSON.stringify(items) },
         });
 
@@ -80,7 +80,7 @@ app.post("/checkout", async (req, res) => {
             totalAmount: totalAmount,
             purchaseDate: new Date().toISOString(),
         };
-
+        
         console.log("Order saved in sessions:", orderSessions[session.id]);
 
         res.send(JSON.stringify({ url: session.url }));
