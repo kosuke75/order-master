@@ -8,18 +8,27 @@ import './Success.css';
 const Success = () => {
   const [user, loading, error] = useAuthState(auth);
   const [orderDetails, setOrderDetails] = useState(null);
+  const [fetchError, setFetchError] = useState(null);
   const location = useLocation();
   const sessionId = new URLSearchParams(location.search).get('session_id'); // URLからsession_idを取得
 
   useEffect(() => {
     if (sessionId) {
       fetch(`https://main.d1i2hzm1xh2h9b.amplifyapp.com/getOrderDetails?sessionId=${sessionId}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(data => {
-          console.log("Order details fetched:", data);  // サーバーからのデータを確認
+          console.log("Order details fetched:", data);
           setOrderDetails(data);
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error('Failed to fetch order details:', err);
+          setFetchError('Failed to fetch order details. Please try again later.');
+        });
     }
   }, [sessionId]);
 
@@ -35,6 +44,13 @@ const Success = () => {
     return <p>You need to be logged in to view this page.</p>;
   }
 
+  if (fetchError) {
+    return <div>
+      <p>{fetchError}</p>
+      <button onClick={() => window.location.reload()}>Retry</button>
+    </div>;
+  }
+
   if (!orderDetails) {
     return <p>Loading order details...</p>;
   }
@@ -43,22 +59,18 @@ const Success = () => {
   const purchaseData = {
     email: user.email,
     purchaseDate: new Date().toLocaleString(),
-    orderId: orderDetails.sessionId, // 注文IDを注文詳細から取得
-    sessionId: orderDetails.sessionId, // sessionIdを追加
+    orderId: orderDetails.sessionId,
+    sessionId: orderDetails.sessionId,
     items: orderDetails.items,
     totalAmount: orderDetails.totalAmount,
   };
 
   const qrData = sessionId; // QRコードに埋め込むデータ
 
-//   const handleBackButtonClick = () => {
-//     navigate('/order'); // 'order' ページに戻る
-//   };
-
   return (
     <div className="success-container">
       <h1>ご購入ありがとうございます</h1>
-      <h3 class="caution">※食券の代わりとして利用しますのでスクリーンショットなどで保存してください</h3>
+      <h3 className="caution">※食券の代わりとして利用しますのでスクリーンショットなどで保存してください</h3>
       <p><strong>購入者email:</strong> {user.email}</p>
       <p><strong>購入日時:</strong> {purchaseData.purchaseDate}</p>
 
@@ -66,7 +78,7 @@ const Success = () => {
       <ul>
         {orderDetails.items.map((item, index) => (
           <li key={index}>
-            <p><strong>{item.title}</strong></p> {/* 商品名: title に変更 */}
+            <p><strong>{item.title}</strong></p>
             <p>数量: {item.quantity}</p>
             <p>金額: ¥{item.price}</p>
           </li>
@@ -75,10 +87,8 @@ const Success = () => {
 
       <h3>合計金額: ¥{orderDetails.totalAmount}</h3>
 
-      {/* <h2>購入内容のQRコード</h2> */}
       <QRCodeCanvas value={qrData} size={256} />
 
-      {/* <p>QRコードをスキャンして、購入情報を確認できます。</p> */}
     </div>
   );
 }
